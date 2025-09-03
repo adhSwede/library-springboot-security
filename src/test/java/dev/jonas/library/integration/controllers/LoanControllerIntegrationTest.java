@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -62,7 +63,7 @@ class LoanControllerIntegrationTest {
                 "Målvakt",
                 "hasse.malvakt@mail.se",
                 "123",
-                LocalDate.now()
+                LocalDateTime.now()
         );
         User savedUser = userRepository.save(user);
 
