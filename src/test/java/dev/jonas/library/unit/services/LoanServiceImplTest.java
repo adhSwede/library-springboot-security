@@ -24,6 +24,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +65,7 @@ public class LoanServiceImplTest {
                 "Målvakt",
                 "hasse.malvakt@mail.se",
                 "123",
-                LocalDate.now()
+                LocalDateTime.now()
         );
 
         Author author = new Author(
