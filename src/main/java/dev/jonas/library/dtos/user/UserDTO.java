@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * DTO representing a user in the system.
@@ -18,5 +18,5 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private LocalDate registrationDate;
+    private LocalDateTime registrationDate;
 }

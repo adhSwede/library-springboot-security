@@ -1,4 +1,4 @@
-package dev.jonas.library.services;
+package dev.jonas.library.services.user;
 
 import dev.jonas.library.dtos.user.UserDTO;
 import dev.jonas.library.dtos.user.UserInputDTO;

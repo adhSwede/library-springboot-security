@@ -1,10 +1,10 @@
-package dev.jonas.library.controllers;
+package dev.jonas.library.controllers.secure;
 
 import dev.jonas.library.dtos.loan.LoanDTO;
 import dev.jonas.library.dtos.user.UserDTO;
 import dev.jonas.library.dtos.user.UserInputDTO;
-import dev.jonas.library.services.LoanService;
-import dev.jonas.library.services.UserService;
+import dev.jonas.library.services.loan.LoanService;
+import dev.jonas.library.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

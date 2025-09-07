@@ -1,8 +1,8 @@
-package dev.jonas.library.controllers;
+package dev.jonas.library.controllers.secure;
 
 import dev.jonas.library.dtos.loan.LoanCreateDTO;
 import dev.jonas.library.dtos.loan.LoanDTO;
-import dev.jonas.library.services.LoanService;
+import dev.jonas.library.services.loan.LoanService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;

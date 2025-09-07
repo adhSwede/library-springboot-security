@@ -1,8 +1,8 @@
-package dev.jonas.library.controllers;
+package dev.jonas.library.controllers.open;
 
 import dev.jonas.library.dtos.author.AuthorDTO;
 import dev.jonas.library.dtos.author.AuthorInputDTO;
-import dev.jonas.library.services.AuthorService;
+import dev.jonas.library.services.author.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

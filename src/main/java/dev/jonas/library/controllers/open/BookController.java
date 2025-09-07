@@ -1,8 +1,8 @@
-package dev.jonas.library.controllers;
+package dev.jonas.library.controllers.open;
 
 import dev.jonas.library.dtos.book.BookDetailsDTO;
 import dev.jonas.library.dtos.book.BookInputDTO;
-import dev.jonas.library.services.BookService;
+import dev.jonas.library.services.book.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

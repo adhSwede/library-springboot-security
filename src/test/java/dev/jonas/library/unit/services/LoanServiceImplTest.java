@@ -14,8 +14,8 @@ import dev.jonas.library.mappers.EntityToDtoMapper;
 import dev.jonas.library.repositories.BookRepository;
 import dev.jonas.library.repositories.LoanRepository;
 import dev.jonas.library.repositories.UserRepository;
-import dev.jonas.library.services.BookServiceImpl;
-import dev.jonas.library.services.LoanServiceImpl;
+import dev.jonas.library.services.book.BookServiceImpl;
+import dev.jonas.library.services.loan.LoanServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -106,7 +106,7 @@ public class LoanServiceImplTest {
                 "Hasse",
                 "Målvakt",
                 "hasse.malvakt@mail.se",
-                LocalDate.now()
+                LocalDateTime.now()
         );
 
         LoanDTO expectedLoanDTO = new LoanDTO(

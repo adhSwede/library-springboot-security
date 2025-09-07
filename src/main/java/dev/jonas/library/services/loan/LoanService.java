@@ -1,4 +1,4 @@
-package dev.jonas.library.services;
+package dev.jonas.library.services.loan;
 
 import dev.jonas.library.dtos.loan.LoanCreateDTO;
 import dev.jonas.library.dtos.loan.LoanDTO;
