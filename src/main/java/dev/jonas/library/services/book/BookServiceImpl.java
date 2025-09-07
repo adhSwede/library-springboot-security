@@ -1,4 +1,4 @@
-package dev.jonas.library.services;
+package dev.jonas.library.services.book;
 
 import dev.jonas.library.dtos.book.BookDetailsDTO;
 import dev.jonas.library.dtos.book.BookInputDTO;

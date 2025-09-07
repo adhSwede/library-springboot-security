@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 
 // Indexes for efficient querying on userId and roleId
 @Table(name = "user_roles",
-indexes = {
-        @Index(name = "idx_user_roles_user_id", columnList = "userId"),
-        @Index(name = "idx_user_roles_role_id", columnList = "roleId")
-})
+        indexes = {
+                @Index(name = "idx_user_roles_user_id", columnList = "userId"),
+                @Index(name = "idx_user_roles_role_id", columnList = "roleId")
+        })
 @IdClass(UserRole.UserRoleId.class)
 @Entity
 @Getter
@@ -26,9 +26,15 @@ public class UserRole {
     @Id
     private long roleId;
 
-    @Column (nullable = false)
-    private  LocalDateTime createdDate;
-
+    @Column(nullable = true) // Allow null for SQLite compatibility.
+    private LocalDateTime createdDate;
+    // #################### [ Relationships ] ####################
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "roleId", insertable = false, updatable = false)
+    private Role role;
 
     // #################### [ Constructors ] ####################
     // w/o createdDate
@@ -44,15 +50,6 @@ public class UserRole {
             createdDate = LocalDateTime.now();
         }
     }
-
-    // #################### [ Relationships ] ####################
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", insertable = false, updatable = false)
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleId", insertable = false, updatable = false)
-    private Role role;
 
     // #################### [ Static Key Class ] ####################
     @Getter

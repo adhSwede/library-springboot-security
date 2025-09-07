@@ -1,4 +1,4 @@
-package dev.jonas.library.services;
+package dev.jonas.library.services.loan;
 
 import dev.jonas.library.dtos.loan.LoanCreateDTO;
 import dev.jonas.library.dtos.loan.LoanDTO;
@@ -12,6 +12,7 @@ import dev.jonas.library.mappers.EntityToDtoMapper;
 import dev.jonas.library.repositories.BookRepository;
 import dev.jonas.library.repositories.LoanRepository;
 import dev.jonas.library.repositories.UserRepository;
+import dev.jonas.library.services.book.BookServiceImpl;
 import dev.jonas.library.utils.EntityFetcher;
 import dev.jonas.library.utils.InputValidator;
 import jakarta.transaction.Transactional;
