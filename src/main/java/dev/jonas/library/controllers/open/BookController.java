@@ -25,7 +25,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    // ########## [ GET ] ##########
+    // ==================== [ GET ] ====================
 
     /**
      * Retrieves a paginated list of books, optionally filtered by title and/or author.
@@ -61,7 +61,7 @@ public class BookController {
         return ResponseEntity.ok(results);
     }
 
-    // ########## [ POST ] ##########
+    // ==================== [ POST ] ====================
 
     /**
      * Adds a new book to the system.

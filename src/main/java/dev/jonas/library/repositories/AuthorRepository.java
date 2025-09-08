@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// ########## [ Queries ] ##########
+// ==================== [ Queries ] ====================
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 

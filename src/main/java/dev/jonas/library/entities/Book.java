@@ -13,27 +13,27 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
-    // ########## [ Id ] ##########
+    // ==================== [ Id ] ====================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookId;
 
-    // ########## [ Basic Info ] ##########
+    // ==================== [ Basic Info ] ====================
     @Column(nullable = false, length = 200)
     private String title;
 
-    // ########## [ Relationships ] ##########
+    // ==================== [ Relationships ] ====================
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 
-    //########## [ More Info ] ##########
+    //==================== [ More Info ] ====================
     @Column(nullable = false)
     private Integer publicationYear;
     private Integer availableCopies = 1;
     private Integer totalCopies = 1;
 
-    // #################### [ Custom Constructor ] ####################
+    // ======================================== [ Custom Constructor ] ========================================
     public Book(String title, Author author, Integer publicationYear, Integer availableCopies, Integer totalCopies) {
         this.title = title;
         this.author = author;

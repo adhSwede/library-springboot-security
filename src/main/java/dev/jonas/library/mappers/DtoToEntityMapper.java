@@ -17,7 +17,7 @@ import java.time.LocalDate;
  */
 public class DtoToEntityMapper {
 
-    // ########## [ Authors ] ##########
+    // ==================== [ Authors ] ====================
 
     /**
      * Converts an AuthorInputDTO into an Author entity.
@@ -34,7 +34,7 @@ public class DtoToEntityMapper {
         return author;
     }
 
-    // ########## [ Books ] ##########
+    // ==================== [ Books ] ====================
 
     /**
      * Converts a BookInputDTO and an Author entity into a Book entity.
@@ -53,7 +53,7 @@ public class DtoToEntityMapper {
         return book;
     }
 
-    // ########## [ Loans ] ##########
+    // ==================== [ Loans ] ====================
 
     /**
      * Converts a LoanCreateDTO along with User and Book entities into a Loan entity.
@@ -74,7 +74,7 @@ public class DtoToEntityMapper {
         return loan;
     }
 
-    // ########## [ Users ] ##########
+    // ==================== [ Users ] ====================
 
     /**
      * Converts a UserInputDTO into a User entity.

@@ -15,7 +15,7 @@ import dev.jonas.library.entities.User;
  */
 public class EntityToDtoMapper {
 
-    // ########## [ Authors ] ##########
+    // ==================== [ Authors ] ====================
 
     /**
      * Maps an Author entity to its DTO representation.
@@ -33,7 +33,7 @@ public class EntityToDtoMapper {
         );
     }
 
-    // ########## [ Books ] ##########
+    // ==================== [ Books ] ====================
 
     /**
      * Maps a Book entity to its full DTO representation.
@@ -52,7 +52,7 @@ public class EntityToDtoMapper {
         );
     }
 
-    // ########## [ Books – Simple ] ##########
+    // ==================== [ Books – Simple ] ====================
 
     /**
      * Maps a Book entity to a simplified DTO with minimal fields.
@@ -72,7 +72,7 @@ public class EntityToDtoMapper {
         );
     }
 
-    // ########## [ Loans ] ##########
+    // ==================== [ Loans ] ====================
 
     /**
      * Maps a Loan entity to its DTO representation.
@@ -92,7 +92,7 @@ public class EntityToDtoMapper {
         );
     }
 
-    // ########## [ Users ] ##########
+    // ==================== [ Users ] ====================
 
     /**
      * Maps a User entity to its full DTO representation.
@@ -110,7 +110,7 @@ public class EntityToDtoMapper {
         );
     }
 
-    // ########## [ Users – Simple ] ##########
+    // ==================== [ Users – Simple ] ====================
 
     /**
      * Maps a User entity to a simplified DTO with fewer fields.

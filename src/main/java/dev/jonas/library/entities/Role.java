@@ -2,8 +2,8 @@ package dev.jonas.library.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -13,19 +13,19 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class Role {
-    // #################### [ Id ] ####################
+    // ==================== [ Id ] ====================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
 
-    // #################### [ Basic Info ] ####################
+    // ==================== [ Basic Info ] ====================
     @Column(nullable = false, unique = true, length = 50)
     private String roleName;
 
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    // #################### [ Life cycle Hooks ] ####################
+    // ==================== [ Life cycle Hooks ] ====================
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();

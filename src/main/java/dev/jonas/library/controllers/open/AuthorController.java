@@ -24,7 +24,7 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    // ########## [ GET ] ##########
+    // ==================== [ GET ] ====================
 
     /**
      * Retrieves all authors in the system.
@@ -49,7 +49,7 @@ public class AuthorController {
         return ResponseEntity.ok(authors);
     }
 
-    // ########## [ POST ] ##########
+    // ==================== [ POST ] ====================
 
     /**
      * Creates a new author.

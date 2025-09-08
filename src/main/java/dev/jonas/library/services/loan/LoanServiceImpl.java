@@ -9,6 +9,7 @@ import dev.jonas.library.exceptions.BookUnavailableException;
 import dev.jonas.library.exceptions.LoanAlreadyReturnedException;
 import dev.jonas.library.mappers.DtoToEntityMapper;
 import dev.jonas.library.mappers.EntityToDtoMapper;
+import dev.jonas.library.mappers.RolesToAuthorityMapper;
 import dev.jonas.library.repositories.BookRepository;
 import dev.jonas.library.repositories.LoanRepository;
 import dev.jonas.library.repositories.UserRepository;
@@ -16,6 +17,8 @@ import dev.jonas.library.services.book.BookServiceImpl;
 import dev.jonas.library.utils.EntityFetcher;
 import dev.jonas.library.utils.InputValidator;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,31 +30,16 @@ import java.util.List;
  * Handles creating, extending, returning loans, and retrieving loan records.
  */
 @Service
+@RequiredArgsConstructor
 public class LoanServiceImpl implements LoanService {
 
     private final LoanRepository loanRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BookServiceImpl bookServiceImpl;
+    private final RolesToAuthorityMapper rolesToAuthorityMapper;
 
-    // #################### [ Constructor ] ####################
-
-    /**
-     * Constructs the LoanServiceImpl with required repositories and book service.
-     */
-    public LoanServiceImpl(
-            LoanRepository loanRepository,
-            UserRepository userRepository,
-            BookRepository bookRepository,
-            BookServiceImpl bookServiceImpl
-    ) {
-        this.loanRepository = loanRepository;
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-        this.bookServiceImpl = bookServiceImpl;
-    }
-
-    // #################### [ GET ] ####################
+    // ==================== [ GET ] ====================
 
     /**
      * Retrieves all loans.
@@ -61,7 +49,7 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<LoanDTO> getAllLoanDTOs() {
         List<Loan> loans = loanRepository.findAll();
-        List<LoanDTO> dtos = new ArrayList<>();
+        List<LoanDTO> DTOs = new ArrayList<>();
 
         for (Loan loan : loans) {
             LoanDTO dto = new LoanDTO(
@@ -72,10 +60,10 @@ public class LoanServiceImpl implements LoanService {
                     loan.getDueDate(),
                     loan.getReturnedDate()
             );
-            dtos.add(dto);
+            DTOs.add(dto);
         }
 
-        return dtos;
+        return DTOs;
     }
 
     /**
@@ -92,6 +80,14 @@ public class LoanServiceImpl implements LoanService {
                 .toList();
     }
 
+    public List<LoanDTO> getLoansByUserEmail(String email) {
+        User user = EntityFetcher.getUserOrThrow(email, userRepository);
+        return loanRepository.findByUser_userId(user.getUserId())
+                .stream()
+                .map(EntityToDtoMapper::mapToLoanDto)
+                .toList();
+    }
+
     /**
      * Retrieves a single loan by its ID.
      *
@@ -101,10 +97,26 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public LoanDTO getLoanById(Long loanId) {
         Loan loan = EntityFetcher.getLoanOrThrow(loanId, loanRepository);
+        String currentEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User currentUser = userRepository.findByEmailIgnoreCase(currentEmail)
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+
+        boolean isAdmin = rolesToAuthorityMapper
+                .mapRolesToAuthorities(currentUser.getUserId())
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isOwner = currentUser.getUserId().equals(loan.getUser().getUserId());
+
+        if (!isAdmin && !isOwner) {
+            throw new SecurityException("Access denied to loan ID: " + loanId);
+        }
+
         return EntityToDtoMapper.mapToLoanDto(loan);
     }
 
-    // #################### [ POST ] ####################
+    // ==================== [ POST ] ====================
 
     /**
      * Adds a new loan for a user and a book.
@@ -137,7 +149,7 @@ public class LoanServiceImpl implements LoanService {
         return EntityToDtoMapper.mapToLoanDto(savedLoan);
     }
 
-    // #################### [ PUT ] ####################
+    // ==================== [ PUT ] ====================
 
     /**
      * Extends the due date of a loan.
@@ -184,4 +196,3 @@ public class LoanServiceImpl implements LoanService {
     }
 
 }
-
