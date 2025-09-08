@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-// ########## [ Queries ] ##########
+// ==================== [ Queries ] ====================
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// ########## [ Queries ] ##########
+// ==================== [ Queries ] ====================
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
     List<Loan> findByUser_userId(Long userId);

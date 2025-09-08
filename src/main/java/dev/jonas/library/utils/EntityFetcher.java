@@ -64,6 +64,19 @@ public class EntityFetcher {
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found"));
     }
 
+    /**
+     * Fetches a User entity by its email, or throws an exception if not found.
+     *
+     * @param email the email of the User to fetch
+     * @param repo  the repository to perform the search
+     * @return the User entity
+     * @throws UserNotFoundException if the User with the given email is not found
+     */
+    public static User getUserOrThrow(String email, UserRepository repo) {
+        return repo.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+    }
+
     // #################### [ Loan Fetching ] ####################
 
     /**

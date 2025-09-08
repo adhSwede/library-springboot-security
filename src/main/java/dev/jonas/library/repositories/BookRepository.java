@@ -11,21 +11,21 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-// ########## [ Queries ] ##########
+// ==================== [ Queries ] ====================
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    // ########## [ JPQL Search ] ##########
+    // ==================== [ JPQL Search ] ====================
     @Query("SELECT b FROM Book b WHERE " +
             "(:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
             "(:author IS NULL OR (b.author IS NOT NULL AND LOWER(CONCAT(b.author.firstName, ' ', b.author.lastName)) LIKE LOWER(CONCAT('%', :author, '%'))))")
     List<Book> searchBooks(@Param("title") String title, @Param("author") String author);
 
-    // ########## [ Native Query ] ##########
+    // ==================== [ Native Query ] ====================
     @Query(value = "SELECT * FROM books WHERE book_id = :id", nativeQuery = true)
     Optional<Book> findBookByIdNative(@Param("id") Long id);
 
-    // ########## [ JPQL Paged Search ] ##########
+    // ==================== [ JPQL Paged Search ] ====================
     @Query("""
             SELECT b FROM Book b
             WHERE (:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')))

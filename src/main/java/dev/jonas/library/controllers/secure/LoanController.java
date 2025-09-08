@@ -6,6 +6,8 @@ import dev.jonas.library.services.loan.LoanService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,7 +34,7 @@ public class LoanController {
         this.loanService = loanService;
     }
 
-    // ########## [ GET ] ##########
+    // ==================== [ GET ] ====================
 
     /**
      * Retrieves all loan records.
@@ -51,13 +53,22 @@ public class LoanController {
      * @param id the loan ID
      * @return the corresponding loan
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<LoanDTO> getLoanById(@PathVariable Long id) {
         LoanDTO loan = loanService.getLoanById(id);
         return ResponseEntity.ok(loan);
     }
 
-    // ########## [ POST ] ##########
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/user")
+    public ResponseEntity<List<LoanDTO>> getLoansForCurrentUser(Authentication auth) {
+        String email = auth.getName();
+        List<LoanDTO> userLoans = loanService.getLoansByUserEmail(email);
+        return ResponseEntity.ok(userLoans);
+    }
+
+    // ==================== [ POST ] ====================
 
     /**
      * Creates a new loan.
@@ -65,6 +76,7 @@ public class LoanController {
      * @param dto data for the loan to create
      * @return the created loan
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<LoanDTO> createLoan(@RequestBody LoanCreateDTO dto) {
         LoanDTO createdLoan = loanService.addLoan(dto);
@@ -73,7 +85,7 @@ public class LoanController {
                 .body(createdLoan);
     }
 
-    // ########## [ PUT ] ##########
+    // ==================== [ PUT ] ====================
 
     /**
      * Extends the due date of a loan by 14 days.
@@ -81,6 +93,7 @@ public class LoanController {
      * @param id the ID of the loan to extend
      * @return the updated loan
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/extend")
     public ResponseEntity<LoanDTO> extendLoan(@PathVariable Long id) {
         LoanDTO extendedLoan = loanService.extendLoan(id);
@@ -93,6 +106,7 @@ public class LoanController {
      * @param id the ID of the loan to return
      * @return the updated loan
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/return")
     public ResponseEntity<LoanDTO> returnLoan(@PathVariable Long id) {
         LoanDTO returnedLoan = loanService.returnLoan(id);

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRole {
-    // #################### [ Ids ] ####################
+    // ==================== [ Ids ] ====================
     @Id
     private long userId;
 
@@ -28,7 +28,7 @@ public class UserRole {
 
     @Column(nullable = true) // Allow null for SQLite compatibility.
     private LocalDateTime createdDate;
-    // #################### [ Relationships ] ####################
+    // ==================== [ Relationships ] ====================
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
@@ -36,14 +36,14 @@ public class UserRole {
     @JoinColumn(name = "roleId", insertable = false, updatable = false)
     private Role role;
 
-    // #################### [ Constructors ] ####################
+    // ==================== [ Constructors ] ====================
     // w/o createdDate
     public UserRole(long userId, long roleId) {
         this.userId = userId;
         this.roleId = roleId;
     }
 
-    // #################### [ Life cycle hooks ] ####################
+    // ==================== [ Life cycle hooks ] ====================
     @PrePersist
     protected void onCreate() {
         if (createdDate == null) {
@@ -51,7 +51,7 @@ public class UserRole {
         }
     }
 
-    // #################### [ Static Key Class ] ####################
+    // ==================== [ Static Key Class ] ====================
     @Getter
     @Setter
     @NoArgsConstructor

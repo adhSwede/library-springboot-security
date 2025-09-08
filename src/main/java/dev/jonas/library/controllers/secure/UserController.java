@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
     private final LoanService loanService;
 
-    // ########## [ GET ] ##########
+    // ==================== [ GET ] ====================
 
     /**
      * Retrieves all users in the system.
@@ -62,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(loans);
     }
 
-    // ########## [ POST ] ##########
+    // ==================== [ POST ] ====================
 
     /**
      * Adds a new user to the system.

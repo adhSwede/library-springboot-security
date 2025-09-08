@@ -12,12 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Author {
 
-    // #################### [ Id ] ####################
+    // ==================== [ Id ] ====================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorId;
 
-    // #################### [ Basic Info ] ####################
+    // ==================== [ Basic Info ] ====================
     @Column(nullable = false, length = 100)
     private String firstName;
 
@@ -29,7 +29,7 @@ public class Author {
     @Column(length = 100)
     private String nationality;
 
-    // #################### [ Custom Constructor ] ####################
+    // ==================== [ Custom Constructor ] ====================
     public Author(String firstName, String lastName, Integer birthYear, String nationality) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,10 +37,10 @@ public class Author {
         this.nationality = nationality;
     }
 
-    // #################### [ Relationships ] ####################
+    // ==================== [ Relationships ] ====================
     // This entity is referenced by Book.
 
-    // #################### [ Convenience ] ####################
+    // ==================== [ Convenience ] ====================
     public String getFullName() {
         return firstName + " " + lastName;
     }

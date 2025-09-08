@@ -2,8 +2,8 @@ package dev.jonas.library.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 public class User {
-    // #################### [ Id ] ####################
+    // ==================== [ Id ] ====================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    // #################### [ Basic Info ] ####################
+    // ==================== [ Basic Info ] ====================
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
@@ -36,7 +36,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
-    // #################### [ Additions for Spring security ] ####################
+    // ==================== [ Additions for Spring security ] ====================
     @Column(nullable = false)
     private boolean enabled;
 
@@ -58,13 +58,7 @@ public class User {
     @Column
     private LocalDateTime lockedUntil;
 
-    // #################### [ Life cycle Hooks ] ####################
-    @PrePersist
-    protected void onCreate() {
-        registrationDate = LocalDateTime.now();
-    }
-
-    // #################### [ Custom Constructor ] ####################
+    // ==================== [ Custom Constructor ] ====================
     public User(String firstName, String lastName, String email, String password, LocalDateTime registrationDate) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -80,6 +74,12 @@ public class User {
         this.lockedUntil = null;
     }
 
-    // #################### [ Relationships ] ####################
+    // ==================== [ Life cycle Hooks ] ====================
+    @PrePersist
+    protected void onCreate() {
+        registrationDate = LocalDateTime.now();
+    }
+
+    // ==================== [ Relationships ] ====================
     // This entity is referenced by Loan.
 }
