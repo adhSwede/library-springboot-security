@@ -1,4 +1,4 @@
-package dev.jonas.library.controllers.secure;
+package dev.jonas.library.controllers.api;
 
 import dev.jonas.library.dtos.loan.LoanDTO;
 import dev.jonas.library.dtos.user.UserDTO;
@@ -7,6 +7,7 @@ import dev.jonas.library.services.loan.LoanService;
 import dev.jonas.library.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,6 +33,7 @@ public class UserController {
      *
      * @return list of all UserDTOs
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUserDTOs();
@@ -44,6 +46,7 @@ public class UserController {
      * @param email the user's email
      * @return UserDTO of the found user
      */
+    @PreAuthorize("@userAccessValidator.isAdminOrSelf(#email)")
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         UserDTO userDto = userService.getUserByEmail(email);
@@ -56,6 +59,7 @@ public class UserController {
      * @param userId the ID of the user
      * @return list of LoanDTOs for that user
      */
+    @PreAuthorize("@userAccessValidator.isAdminOrSelf(#userId)")
     @GetMapping("/{userId}/loans")
     public ResponseEntity<List<LoanDTO>> getLoansByUserId(@PathVariable Long userId) {
         List<LoanDTO> loans = loanService.getLoansByUserId(userId);
@@ -70,6 +74,7 @@ public class UserController {
      * @param dto the user input data
      * @return the created UserDTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserDTO> addUser(@RequestBody UserInputDTO dto) {
         UserDTO savedUser = userService.addUser(dto);

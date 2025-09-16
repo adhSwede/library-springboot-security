@@ -1,9 +1,10 @@
-package dev.jonas.library.controllers.open;
+package dev.jonas.library.controllers.api;
 
 import dev.jonas.library.dtos.author.AuthorDTO;
 import dev.jonas.library.dtos.author.AuthorInputDTO;
 import dev.jonas.library.services.author.AuthorService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -25,24 +26,12 @@ public class AuthorController {
     }
 
     // ==================== [ GET ] ====================
-
-    /**
-     * Retrieves all authors in the system.
-     *
-     * @return a list of AuthorDTOs
-     */
     @GetMapping
     public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
         List<AuthorDTO> authors = authorService.getAllAuthorDTOs();
         return ResponseEntity.ok(authors);
     }
 
-    /**
-     * Retrieves authors matching the given last name (case-insensitive).
-     *
-     * @param lastName the partial or full last name to search for
-     * @return a list of matching AuthorDTOs
-     */
     @GetMapping("/name/{lastName}")
     public ResponseEntity<List<AuthorDTO>> getAuthorsByLastName(@PathVariable String lastName) {
         List<AuthorDTO> authors = authorService.getAuthorsByLastName(lastName);
@@ -50,19 +39,15 @@ public class AuthorController {
     }
 
     // ==================== [ POST ] ====================
-
     /**
-     * Creates a new author.
-     *
-     * @param dto the input data for the author
-     * @return the created AuthorDTO with a Location header
+     * Admin-only endpoint for adding new Authors to the library.
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> addAuthor(@RequestBody AuthorInputDTO dto) {
         AuthorDTO savedDto = authorService.addAuthor(dto);
         return ResponseEntity
                 .created(URI.create("/authors/" + savedDto.getAuthorId()))
                 .body(savedDto);
     }
-
 }

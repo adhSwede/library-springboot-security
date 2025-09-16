@@ -6,34 +6,28 @@ import dev.jonas.library.entities.User;
 import dev.jonas.library.exceptions.UserNotFoundException;
 import dev.jonas.library.mappers.DtoToEntityMapper;
 import dev.jonas.library.mappers.EntityToDtoMapper;
+import dev.jonas.library.mappers.RolesToAuthorityMapper;
 import dev.jonas.library.repositories.UserRepository;
 import dev.jonas.library.utils.InputValidator;
+import dev.jonas.library.utils.UserAccessValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * Service implementation for managing users in the library system.
- * Supports adding users, retrieving all users, and searching by email.
+ * Service implementation for managing users.
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RolesToAuthorityMapper rolesToAuthorityMapper;
+    private final UserAccessValidator userAccessValidator;
 
-    // #################### [ Constructor ] ####################
-
-    /**
-     * Constructs the UserServiceImpl with the required user repository.
-     *
-     * @param userRepository the repository for User entities
-     */
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    // #################### [ GET ] ####################
-
+    // ==================== [ GET ] ====================
     /**
      * Retrieves all users in the system.
      *
@@ -55,13 +49,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getUserByEmail(String email) {
-        return userRepository.findByEmailIgnoreCase(email)
-                .map(EntityToDtoMapper::mapToUserDto)
+        User targetUser = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new UserNotFoundException("No user found with email: " + email));
+
+        userAccessValidator.validateUserAccess(targetUser.getUserId()); // Validate access
+
+        return EntityToDtoMapper.mapToUserDto(targetUser);
     }
 
-    // #################### [ POST ] ####################
-
+    // ==================== [ POST ] ====================
     /**
      * Adds a new user to the system.
      *

@@ -19,7 +19,9 @@ public class RolesToAuthorityMapper {
     private final RoleRepository roleRepository;
 
     public Collection<GrantedAuthority> mapRolesToAuthorities(Long userId) {
-        return userRoleRepository.findByUserId(userId).stream()
+        return userRoleRepository
+                .findByUserId(userId)
+                .stream()
                 .map(ur -> roleRepository.findById(ur.getRoleId()).orElse(null))
                 .filter(Objects::nonNull)
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))

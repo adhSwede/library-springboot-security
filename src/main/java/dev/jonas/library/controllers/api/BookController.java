@@ -1,4 +1,4 @@
-package dev.jonas.library.controllers.open;
+package dev.jonas.library.controllers.api;
 
 import dev.jonas.library.dtos.book.BookDetailsDTO;
 import dev.jonas.library.dtos.book.BookInputDTO;
@@ -6,6 +6,7 @@ import dev.jonas.library.services.book.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -26,15 +27,6 @@ public class BookController {
     }
 
     // ==================== [ GET ] ====================
-
-    /**
-     * Retrieves a paginated list of books, optionally filtered by title and/or author.
-     *
-     * @param title    optional title keyword for filtering
-     * @param author   optional author name for filtering
-     * @param pageable pagination and sorting information
-     * @return a page of matching books
-     */
     @GetMapping
     public ResponseEntity<Page<BookDetailsDTO>> getBooks(
             @RequestParam(required = false) String title,
@@ -45,13 +37,6 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    /**
-     * Performs a simple keyword search for books by title and/or author.
-     *
-     * @param title  optional title keyword
-     * @param author optional author keyword
-     * @return list of matching books
-     */
     @GetMapping("/search")
     public ResponseEntity<List<BookDetailsDTO>> searchBooks(
             @RequestParam(required = false) String title,
@@ -62,14 +47,11 @@ public class BookController {
     }
 
     // ==================== [ POST ] ====================
-
     /**
-     * Adds a new book to the system.
-     *
-     * @param dto input data for the book
-     * @return the saved book with a Location header
+     * Admin-only endpoint for adding new books to the library.
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDetailsDTO> addBook(@RequestBody BookInputDTO dto) {
         BookDetailsDTO savedBook = bookService.addBook(dto);
 
@@ -77,5 +59,4 @@ public class BookController {
                 .created(URI.create("/books/" + savedBook.getBookId()))
                 .body(savedBook);
     }
-
 }

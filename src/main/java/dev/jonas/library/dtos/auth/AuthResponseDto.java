@@ -15,12 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class AuthResponseDto {
-    @NotNull
     private LocalDateTime expiresAt;
-
-    @NotBlank
-    private String token;
-    
-//  Removed Token type because it was redundant.
-//  private String tokenType = "Bearer";
+    private String accessToken;
+    private String refreshToken;
 }
