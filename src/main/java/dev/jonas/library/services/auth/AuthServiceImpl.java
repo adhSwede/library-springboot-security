@@ -3,6 +3,7 @@ package dev.jonas.library.services.auth;
 import dev.jonas.library.dtos.auth.AuthResponseDto;
 import dev.jonas.library.dtos.auth.LoginRequestDto;
 import dev.jonas.library.dtos.auth.RegisterRequestDto;
+import dev.jonas.library.entities.RefreshToken;
 import dev.jonas.library.entities.Role;
 import dev.jonas.library.entities.User;
 import dev.jonas.library.entities.UserRole;
@@ -14,14 +15,17 @@ import dev.jonas.library.repositories.UserRoleRepository;
 import dev.jonas.library.security.CustomUserDetails;
 import dev.jonas.library.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -31,24 +35,28 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final RolesToAuthorityMapper rolesToAuthorityMapper;
+    private final RefreshTokenServiceImpl refreshTokenServiceImpl;
+
+    private final Duration accessTokenDuration = Duration.ofHours(1);
 
     @Override
     public AuthResponseDto login(LoginRequestDto loginDto) {
-
         User user = userRepository.findByEmailIgnoreCase(loginDto.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
-        UserDetails userDetails = new CustomUserDetails(user, rolesToAuthorityMapper.mapRolesToAuthorities(user.getUserId()));
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(userDetails);
+        UserDetails userDetails = new CustomUserDetails(user, rolesToAuthorityMapper.mapRolesToAuthorities(user.getUserId()));
+
+        String accessToken = jwtUtil.generateToken(userDetails);
+        String refreshToken = refreshTokenServiceImpl.createRefreshToken(user).getToken();
 
         return new AuthResponseDto(
-                LocalDateTime.now().plusHours(1),
-                token
+                LocalDateTime.now().plus(accessTokenDuration),
+                accessToken,
+                refreshToken
         );
     }
 
@@ -75,12 +83,44 @@ public class AuthServiceImpl implements AuthService {
 
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(registerDto.getEmail());
 
-        String token = jwtUtil.generateToken(userDetails);
+        String accessToken = jwtUtil.generateToken(userDetails);
+        String refreshToken = refreshTokenServiceImpl.createRefreshToken(user).getToken();
 
         return new AuthResponseDto(
-                LocalDateTime.now().plusHours(1),
-                token
-                // "Bearer" token type removed for simplicity
+                LocalDateTime.now().plus(accessTokenDuration),
+                accessToken,
+                refreshToken
         );
+    }
+
+    @Override
+    public AuthResponseDto refresh(String oldRefreshToken) {
+        RefreshToken storedToken = refreshTokenServiceImpl.validateAndGetToken(oldRefreshToken);
+        User user = storedToken.getUser();
+
+        UserDetails userDetails = new CustomUserDetails(user, rolesToAuthorityMapper.mapRolesToAuthorities(user.getUserId()));
+        String accessToken = jwtUtil.generateToken(userDetails);
+        refreshTokenServiceImpl.deleteToken(storedToken);
+        String refreshToken = refreshTokenServiceImpl.createRefreshToken(user).getToken();
+
+        return new AuthResponseDto(
+                LocalDateTime.now().plus(accessTokenDuration),
+                accessToken,
+                refreshToken
+        );
+    }
+
+    @Override
+    public void logoutAuthenticatedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (email == null || email.equals("anonymousUser")) {
+            throw new UserNotFoundException("No authenticated user found");
+        }
+
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        refreshTokenServiceImpl.revokeAllTokensForUser(user);
     }
 }

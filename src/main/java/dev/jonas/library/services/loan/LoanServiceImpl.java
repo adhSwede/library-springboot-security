@@ -16,6 +16,7 @@ import dev.jonas.library.repositories.UserRepository;
 import dev.jonas.library.services.book.BookServiceImpl;
 import dev.jonas.library.utils.EntityFetcher;
 import dev.jonas.library.utils.InputValidator;
+import dev.jonas.library.utils.UserAccessValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,14 +39,9 @@ public class LoanServiceImpl implements LoanService {
     private final UserRepository userRepository;
     private final BookServiceImpl bookServiceImpl;
     private final RolesToAuthorityMapper rolesToAuthorityMapper;
+    private final UserAccessValidator userAccessValidator;
 
     // ==================== [ GET ] ====================
-
-    /**
-     * Retrieves all loans.
-     *
-     * @return a list of LoanDTOs
-     */
     @Override
     public List<LoanDTO> getAllLoanDTOs() {
         List<Loan> loans = loanRepository.findAll();
@@ -63,15 +59,9 @@ public class LoanServiceImpl implements LoanService {
             DTOs.add(dto);
         }
 
-        return DTOs;
+        return DTOs; // Using a loop for clarity, could also use streams
     }
 
-    /**
-     * Retrieves all loans for a given user.
-     *
-     * @param userId the user's ID
-     * @return list of loans for that user
-     */
     @Override
     public List<LoanDTO> getLoansByUserId(Long userId) {
         return loanRepository.findByUser_userId(userId)
@@ -88,12 +78,6 @@ public class LoanServiceImpl implements LoanService {
                 .toList();
     }
 
-    /**
-     * Retrieves a single loan by its ID.
-     *
-     * @param loanId the loan's ID
-     * @return the loan as LoanDTO
-     */
     @Override
     public LoanDTO getLoanById(Long loanId) {
         Loan loan = EntityFetcher.getLoanOrThrow(loanId, loanRepository);
@@ -102,30 +86,12 @@ public class LoanServiceImpl implements LoanService {
         User currentUser = userRepository.findByEmailIgnoreCase(currentEmail)
                 .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
 
-        boolean isAdmin = rolesToAuthorityMapper
-                .mapRolesToAuthorities(currentUser.getUserId())
-                .stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-
-        boolean isOwner = currentUser.getUserId().equals(loan.getUser().getUserId());
-
-        if (!isAdmin && !isOwner) {
-            throw new SecurityException("Access denied to loan ID: " + loanId);
-        }
+        userAccessValidator.validateUserAccess(currentUser.getUserId()); // Validate access
 
         return EntityToDtoMapper.mapToLoanDto(loan);
     }
 
     // ==================== [ POST ] ====================
-
-    /**
-     * Adds a new loan for a user and a book.
-     * Decrements the book's available copies.
-     * Default loan period is always 14 days.
-     *
-     * @param dto loan creation data
-     * @return the created loan as LoanDTO
-     */
     @Override
     @Transactional
     public LoanDTO addLoan(LoanCreateDTO dto) {
@@ -150,14 +116,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
     // ==================== [ PUT ] ====================
-
-    /**
-     * Extends the due date of a loan.
-     * Default extension period is always 14 days.
-     *
-     * @param loanId the loan's ID
-     * @return the updated loan
-     */
     @Override
     @Transactional
     public LoanDTO extendLoan(Long loanId) {
@@ -173,12 +131,6 @@ public class LoanServiceImpl implements LoanService {
         return EntityToDtoMapper.mapToLoanDto(savedLoan);
     }
 
-    /**
-     * Marks a loan as returned and increases available book copies.
-     *
-     * @param loanId the loan's ID
-     * @return the updated loan
-     */
     @Override
     @Transactional
     public LoanDTO returnLoan(Long loanId) {
@@ -194,5 +146,4 @@ public class LoanServiceImpl implements LoanService {
         Loan savedLoan = loanRepository.save(loan);
         return EntityToDtoMapper.mapToLoanDto(savedLoan);
     }
-
 }
