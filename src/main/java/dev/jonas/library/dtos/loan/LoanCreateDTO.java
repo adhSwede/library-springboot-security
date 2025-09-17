@@ -1,7 +1,8 @@
 package dev.jonas.library.dtos.loan;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,8 +11,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoanCreateDTO {
+    @NotNull
     private Long userId;
+    @NotNull
     private Long bookId;
 }

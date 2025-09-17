@@ -3,8 +3,10 @@ package dev.jonas.library.controllers;
 import dev.jonas.library.dtos.auth.AuthResponseDto;
 import dev.jonas.library.dtos.auth.LoginRequestDto;
 import dev.jonas.library.dtos.auth.RefreshRequestDTO;
-import dev.jonas.library.dtos.auth.RegisterRequestDto;
+import dev.jonas.library.dtos.user.UserInputDTO;
+import dev.jonas.library.repositories.UserRepository;
 import dev.jonas.library.services.auth.AuthService;
+import dev.jonas.library.services.auth.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import dev.jonas.library.repositories.UserRepository;
-import dev.jonas.library.services.auth.RefreshTokenService;
 
 /**
  * REST controller for handling authentication-related operations such as login, registration,
@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> register(@RequestBody @Valid RegisterRequestDto req) {
+    public ResponseEntity<AuthResponseDto> register(@RequestBody @Valid UserInputDTO req) {
         return ResponseEntity.ok(authService.register(req));
     }
 

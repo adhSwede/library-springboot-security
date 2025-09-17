@@ -15,7 +15,6 @@ import dev.jonas.library.repositories.LoanRepository;
 import dev.jonas.library.repositories.UserRepository;
 import dev.jonas.library.services.book.BookServiceImpl;
 import dev.jonas.library.utils.EntityFetcher;
-import dev.jonas.library.utils.InputValidator;
 import dev.jonas.library.utils.UserAccessValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -95,9 +94,6 @@ public class LoanServiceImpl implements LoanService {
     @Override
     @Transactional
     public LoanDTO addLoan(LoanCreateDTO dto) {
-        InputValidator.requireNonNull(dto.getUserId(), "User ID");
-        InputValidator.requireNonNull(dto.getBookId(), "Book ID");
-
         User user = EntityFetcher.getUserOrThrow(dto.getUserId(), userRepository);
         Book book = EntityFetcher.getBookOrThrow(dto.getBookId(), bookRepository);
 

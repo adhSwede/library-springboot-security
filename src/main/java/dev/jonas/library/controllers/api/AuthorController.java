@@ -3,6 +3,7 @@ package dev.jonas.library.controllers.api;
 import dev.jonas.library.dtos.author.AuthorDTO;
 import dev.jonas.library.dtos.author.AuthorInputDTO;
 import dev.jonas.library.services.author.AuthorService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +40,13 @@ public class AuthorController {
     }
 
     // ==================== [ POST ] ====================
+
     /**
      * Admin-only endpoint for adding new Authors to the library.
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AuthorDTO> addAuthor(@RequestBody AuthorInputDTO dto) {
+    public ResponseEntity<AuthorDTO> addAuthor(@RequestBody @Valid AuthorInputDTO dto) {
         AuthorDTO savedDto = authorService.addAuthor(dto);
         return ResponseEntity
                 .created(URI.create("/authors/" + savedDto.getAuthorId()))
