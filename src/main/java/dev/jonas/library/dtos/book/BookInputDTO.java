@@ -1,9 +1,9 @@
 package dev.jonas.library.dtos.book;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,14 +12,20 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-
+@RequiredArgsConstructor
 public class BookInputDTO {
+    @NotBlank
     private String title;
+
     @NotNull(message = "Publication year must not be null.")
     private Integer publicationYear;
+
+    @NotNull
     private Integer availableCopies;
+
+    @NotNull
     private Integer totalCopies;
+
+    @NotNull
     private Long authorId;
 }

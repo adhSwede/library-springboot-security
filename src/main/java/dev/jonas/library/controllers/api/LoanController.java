@@ -3,6 +3,7 @@ package dev.jonas.library.controllers.api;
 import dev.jonas.library.dtos.loan.LoanCreateDTO;
 import dev.jonas.library.dtos.loan.LoanDTO;
 import dev.jonas.library.services.loan.LoanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/loans")
 @RequiredArgsConstructor
-public class  LoanController {
+public class LoanController {
 
     private final LoanService loanService;
 
@@ -48,7 +49,7 @@ public class  LoanController {
     // ==================== [ POST ] ====================
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<LoanDTO> createLoan(@RequestBody LoanCreateDTO dto) {
+    public ResponseEntity<LoanDTO> createLoan(@RequestBody @Valid LoanCreateDTO dto) {
         LoanDTO createdLoan = loanService.addLoan(dto);
         return ResponseEntity
                 .created(URI.create("/loans/" + createdLoan.getLoanId()))

@@ -16,13 +16,6 @@ import dev.jonas.library.entities.User;
 public class EntityToDtoMapper {
 
     // ==================== [ Authors ] ====================
-
-    /**
-     * Maps an Author entity to its DTO representation.
-     *
-     * @param author the Author entity
-     * @return the corresponding AuthorDTO
-     */
     public static AuthorDTO mapToAuthorDto(Author author) {
         return new AuthorDTO(
                 author.getAuthorId(),
@@ -34,13 +27,6 @@ public class EntityToDtoMapper {
     }
 
     // ==================== [ Books ] ====================
-
-    /**
-     * Maps a Book entity to its full DTO representation.
-     *
-     * @param book the Book entity
-     * @return the corresponding BookDetailsDTO
-     */
     public static BookDetailsDTO mapToBookDetailsDto(Book book) {
         return new BookDetailsDTO(
                 book.getBookId(),
@@ -53,14 +39,6 @@ public class EntityToDtoMapper {
     }
 
     // ==================== [ Books – Simple ] ====================
-
-    /**
-     * Maps a Book entity to a simplified DTO with minimal fields.
-     * Author name and other details are omitted.
-     *
-     * @param book the Book entity
-     * @return a simplified BookDetailsDTO
-     */
     public static BookDetailsDTO mapToBookDetailsDtoSimple(Book book) {
         return new BookDetailsDTO(
                 book.getBookId(),
@@ -73,14 +51,6 @@ public class EntityToDtoMapper {
     }
 
     // ==================== [ Loans ] ====================
-
-    /**
-     * Maps a Loan entity to its DTO representation.
-     * Includes both book and user data as nested DTOs.
-     *
-     * @param loan the Loan entity
-     * @return the corresponding LoanDTO
-     */
     public static LoanDTO mapToLoanDto(Loan loan) {
         return new LoanDTO(
                 loan.getLoanId(),
@@ -93,13 +63,6 @@ public class EntityToDtoMapper {
     }
 
     // ==================== [ Users ] ====================
-
-    /**
-     * Maps a User entity to its full DTO representation.
-     *
-     * @param user the User entity
-     * @return the corresponding UserDTO
-     */
     public static UserDTO mapToUserDto(User user) {
         return new UserDTO(
                 user.getUserId(),
@@ -111,14 +74,6 @@ public class EntityToDtoMapper {
     }
 
     // ==================== [ Users – Simple ] ====================
-
-    /**
-     * Maps a User entity to a simplified DTO with fewer fields.
-     * Registration date is omitted.
-     *
-     * @param user the User entity
-     * @return a simplified UserDTO
-     */
     public static UserDTO mapToUserDtoSimple(User user) {
         return new UserDTO(
                 user.getUserId(),

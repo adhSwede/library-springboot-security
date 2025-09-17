@@ -2,10 +2,9 @@ package dev.jonas.library.services.auth;
 
 import dev.jonas.library.entities.User;
 import dev.jonas.library.mappers.RolesToAuthorityMapper;
-import dev.jonas.library.repositories.RoleRepository;
 import dev.jonas.library.repositories.UserRepository;
-import dev.jonas.library.repositories.UserRoleRepository;
 import dev.jonas.library.security.CustomUserDetails;
+import dev.jonas.library.utils.EntityFetcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,14 +17,11 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
     private final RolesToAuthorityMapper rolesToAuthorityMapper;
 
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailIgnoreCase(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        User user = EntityFetcher.getUserOrThrow(username, userRepository);
 
         Collection<GrantedAuthority> authorities = rolesToAuthorityMapper.mapRolesToAuthorities(user.getUserId());
 

@@ -1,7 +1,9 @@
 package dev.jonas.library.dtos.author;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,11 +12,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthorInputDTO {
+    @NotNull
     private Long authorId;
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotNull
     private Integer birthYear;
+    @NotBlank
     private String nationality;
 }

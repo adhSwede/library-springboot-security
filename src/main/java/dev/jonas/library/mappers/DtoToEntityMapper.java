@@ -18,13 +18,6 @@ import java.time.LocalDate;
 public class DtoToEntityMapper {
 
     // ==================== [ Authors ] ====================
-
-    /**
-     * Converts an AuthorInputDTO into an Author entity.
-     *
-     * @param dto the input data for the author
-     * @return a new Author entity with values from the DTO
-     */
     public static Author mapToAuthorEntity(AuthorInputDTO dto) {
         Author author = new Author();
         author.setFirstName(dto.getFirstName());
@@ -35,14 +28,6 @@ public class DtoToEntityMapper {
     }
 
     // ==================== [ Books ] ====================
-
-    /**
-     * Converts a BookInputDTO and an Author entity into a Book entity.
-     *
-     * @param dto    the input data for the book
-     * @param author the author associated with the book
-     * @return a new Book entity
-     */
     public static Book mapToBookEntity(BookInputDTO dto, Author author) {
         Book book = new Book();
         book.setTitle(dto.getTitle());
@@ -54,16 +39,6 @@ public class DtoToEntityMapper {
     }
 
     // ==================== [ Loans ] ====================
-
-    /**
-     * Converts a LoanCreateDTO along with User and Book entities into a Loan entity.
-     * Automatically sets the borrowed date to now and due date to 14 days from now.
-     *
-     * @param dto  the input loan data
-     * @param user the user taking the loan
-     * @param book the book being loaned
-     * @return a new Loan entity
-     */
     public static Loan mapToLoanEntity(LoanCreateDTO dto, User user, Book book) {
         Loan loan = new Loan();
         loan.setUser(user);
@@ -75,13 +50,6 @@ public class DtoToEntityMapper {
     }
 
     // ==================== [ Users ] ====================
-
-    /**
-     * Converts a UserInputDTO into a User entity.
-     *
-     * @param dto the input data for the user
-     * @return a new User entity with values from the DTO
-     */
     public static User mapToUserEntity(UserInputDTO dto) {
         User user = new User();
         user.setFirstName(dto.getFirstName());
@@ -90,5 +58,4 @@ public class DtoToEntityMapper {
         user.setPassword(dto.getPassword());
         return user;
     }
-
 }

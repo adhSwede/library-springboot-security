@@ -5,6 +5,7 @@ import dev.jonas.library.dtos.user.UserDTO;
 import dev.jonas.library.dtos.user.UserInputDTO;
 import dev.jonas.library.services.loan.LoanService;
 import dev.jonas.library.services.user.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,12 +28,6 @@ public class UserController {
     private final LoanService loanService;
 
     // ==================== [ GET ] ====================
-
-    /**
-     * Retrieves all users in the system.
-     *
-     * @return list of all UserDTOs
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -40,12 +35,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    /**
-     * Retrieves a single user by their email address.
-     *
-     * @param email the user's email
-     * @return UserDTO of the found user
-     */
     @PreAuthorize("@userAccessValidator.isAdminOrSelf(#email)")
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
@@ -53,12 +42,6 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    /**
-     * Retrieves all loans associated with a specific user.
-     *
-     * @param userId the ID of the user
-     * @return list of LoanDTOs for that user
-     */
     @PreAuthorize("@userAccessValidator.isAdminOrSelf(#userId)")
     @GetMapping("/{userId}/loans")
     public ResponseEntity<List<LoanDTO>> getLoansByUserId(@PathVariable Long userId) {
@@ -67,16 +50,9 @@ public class UserController {
     }
 
     // ==================== [ POST ] ====================
-
-    /**
-     * Adds a new user to the system.
-     *
-     * @param dto the user input data
-     * @return the created UserDTO
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<UserDTO> addUser(@RequestBody UserInputDTO dto) {
+    public ResponseEntity<UserDTO> addUser(@RequestBody @Valid UserInputDTO dto) {
         UserDTO savedUser = userService.addUser(dto);
         return ResponseEntity
                 .created(URI.create("/users/email/" + savedUser.getEmail()))

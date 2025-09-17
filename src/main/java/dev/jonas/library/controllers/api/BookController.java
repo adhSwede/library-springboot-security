@@ -3,6 +3,7 @@ package dev.jonas.library.controllers.api;
 import dev.jonas.library.dtos.book.BookDetailsDTO;
 import dev.jonas.library.dtos.book.BookInputDTO;
 import dev.jonas.library.services.book.BookService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +48,13 @@ public class BookController {
     }
 
     // ==================== [ POST ] ====================
+
     /**
      * Admin-only endpoint for adding new books to the library.
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BookDetailsDTO> addBook(@RequestBody BookInputDTO dto) {
+    public ResponseEntity<BookDetailsDTO> addBook(@RequestBody @Valid BookInputDTO dto) {
         BookDetailsDTO savedBook = bookService.addBook(dto);
 
         return ResponseEntity
