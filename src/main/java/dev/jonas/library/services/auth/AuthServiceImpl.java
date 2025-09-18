@@ -7,7 +7,10 @@ import dev.jonas.library.entities.RefreshToken;
 import dev.jonas.library.entities.Role;
 import dev.jonas.library.entities.User;
 import dev.jonas.library.entities.UserRole;
+import dev.jonas.library.exceptions.UserNotFoundException;
+import dev.jonas.library.exceptions.auth.AccountLockedException;
 import dev.jonas.library.exceptions.auth.EmailAlreadyUsedException;
+import dev.jonas.library.exceptions.auth.InvalidCredentialsException;
 import dev.jonas.library.mappers.DtoToEntityMapper;
 import dev.jonas.library.mappers.RolesToAuthorityMapper;
 import dev.jonas.library.repositories.RoleRepository;
@@ -17,6 +20,7 @@ import dev.jonas.library.security.CustomUserDetails;
 import dev.jonas.library.security.jwt.JwtUtil;
 import dev.jonas.library.utils.EntityFetcher;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,6 +36,7 @@ import java.time.LocalDateTime;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -50,17 +55,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDto login(LoginRequestDto loginDto) {
         User user = EntityFetcher.getUserOrThrow(loginDto.getEmail(), userRepository);
+        LocalDateTime timestamp = LocalDateTime.now();
 
         if (loginAttemptService.isLocked(user)) {
-            throw new RuntimeException("Account is temporarily locked. Please try again later.");
+            log.warn("User '{}' has been locked out until {}", user.getEmail(), user.getLockedUntil());
+            throw new AccountLockedException("Account is temporarily locked until " + user.getLockedUntil());
         }
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             loginAttemptService.recordFailedAttempt(user);
-            throw new RuntimeException("Invalid email or password");
+            log.warn("Failed login attempt for email '{}' at {}", loginDto.getEmail(), timestamp);
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         loginAttemptService.reset(user);
+
+        log.info("User '{}' logged in successfully at {}", user.getEmail(), timestamp);
 
         return generateAuthTokensForUser(user);
     }
@@ -71,6 +81,7 @@ public class AuthServiceImpl implements AuthService {
         boolean exists = userRepository.findByEmailIgnoreCase(registerDto.getEmail()).isPresent();
 
         if (exists) {
+            log.warn("Attempted registration with already taken email '{}'", registerDto.getEmail());
             throw new EmailAlreadyUsedException("Email is already taken");
         }
 
@@ -82,27 +93,43 @@ public class AuthServiceImpl implements AuthService {
         UserRole userRole = new UserRole(user.getUserId(), role.getRoleId());
         userRoleRepository.save(userRole);
 
+        log.info("New user '{}' registered successfully at {}", user.getEmail(), LocalDateTime.now());
+
         return generateAuthTokensForUser(user);
     }
 
     // #################### [ Refresh Token ] ####################
     @Override
     public AuthResponseDto refresh(String oldRefreshToken) {
-        RefreshToken storedToken = refreshTokenService.validateAndGetToken(oldRefreshToken);
-        User user = storedToken.getUser();
+        LocalDateTime timestamp = LocalDateTime.now();
+        try {
+            RefreshToken storedToken = refreshTokenService.validateAndGetToken(oldRefreshToken);
+            User user = storedToken.getUser();
 
-        return generateAuthTokensForUser(user);
+            log.info("Refresh token used successfully by user '{}' at {}", user.getEmail(), timestamp);
+
+            return generateAuthTokensForUser(user);
+        } catch (Exception e) {
+            log.warn("Failed refresh token attempt at {}: {}", timestamp, e.getMessage());
+            throw e; // rethrow to let your global handler catch it
+        }
     }
 
-    // #################### [ Logout ] ####################
     @Override
     public void logoutAuthenticatedUser() {
-        User user = EntityFetcher.getUserOrThrow(
-                SecurityContextHolder.getContext().getAuthentication().getName(),
-                userRepository
-        );
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        LocalDateTime timestamp = LocalDateTime.now();
 
-        refreshTokenService.revokeAllTokensForUser(user);
+        try {
+            User user = EntityFetcher.getUserOrThrow(email, userRepository);
+            refreshTokenService.revokeAllTokensForUser(user);
+
+            log.info("User '{}' logged out successfully at {}", user.getEmail(), timestamp);
+
+        } catch (UserNotFoundException e) {
+            log.warn("Logout attempt failed: no authenticated user found at {}", timestamp);
+            throw e;
+        }
     }
 
     // #################### [ Helper Methods ] ####################
