@@ -2,6 +2,7 @@ package dev.jonas.library.security;
 
 import dev.jonas.library.security.jwt.JwtAuthFilter;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,15 +20,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity()
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-
-    // ==================== [ Constructor ] ====================
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
 
     // ==================== [ Password Encoder ] ====================
     @Bean

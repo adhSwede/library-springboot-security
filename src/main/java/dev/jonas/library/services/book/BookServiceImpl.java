@@ -4,7 +4,7 @@ import dev.jonas.library.dtos.book.BookDetailsDTO;
 import dev.jonas.library.dtos.book.BookInputDTO;
 import dev.jonas.library.entities.Author;
 import dev.jonas.library.entities.Book;
-import dev.jonas.library.exceptions.BookUnavailableException;
+import dev.jonas.library.exceptions.api.BookUnavailableException;
 import dev.jonas.library.mappers.DtoToEntityMapper;
 import dev.jonas.library.mappers.EntityToDtoMapper;
 import dev.jonas.library.repositories.AuthorRepository;

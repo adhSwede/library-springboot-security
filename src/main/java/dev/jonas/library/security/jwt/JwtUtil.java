@@ -1,6 +1,5 @@
 package dev.jonas.library.security.jwt;
 
-import dev.jonas.library.entities.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,15 +18,10 @@ import java.util.List;
 @Component
 public class JwtUtil {
 
-    // Secret key for signing tokens (HS256)
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    // Token validity duration (1 hour)
     private final long expirationTime = 1000 * 60 * 60;
 
-    /**
-     * Generates a JWT token for the specified username.
-     */
     public String generateToken(UserDetails userDetails) {
         List<String> roles = userDetails.getAuthorities()
                 .stream()
@@ -43,16 +37,10 @@ public class JwtUtil {
                 .compact();
     }
 
-    /**
-     * Extracts the username (subject) from the token.
-     */
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
 
-    /**
-     * Validates the token by checking expiration.
-     */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
@@ -62,10 +50,6 @@ public class JwtUtil {
         return getClaims(token).getExpiration().before(new Date());
     }
 
-
-    /**
-     * Parses claims from the token.
-     */
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

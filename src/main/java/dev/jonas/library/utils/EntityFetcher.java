@@ -1,11 +1,11 @@
 package dev.jonas.library.utils;
 
 import dev.jonas.library.entities.*;
-import dev.jonas.library.exceptions.AuthorNotFoundException;
-import dev.jonas.library.exceptions.BookNotFoundException;
-import dev.jonas.library.exceptions.LoanNotFoundException;
-import dev.jonas.library.exceptions.UserNotFoundException;
-import dev.jonas.library.exceptions.auth.RoleNotFoundException;
+import dev.jonas.library.exceptions.api.AuthorNotFoundException;
+import dev.jonas.library.exceptions.api.BookNotFoundException;
+import dev.jonas.library.exceptions.api.LoanNotFoundException;
+import dev.jonas.library.exceptions.api.UserNotFoundException;
+import dev.jonas.library.exceptions.security.RoleNotFoundException;
 import dev.jonas.library.repositories.*;
 
 /**

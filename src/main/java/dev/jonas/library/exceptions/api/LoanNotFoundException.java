@@ -1,4 +1,4 @@
-package dev.jonas.library.exceptions;
+package dev.jonas.library.exceptions.api;
 
 public class LoanNotFoundException extends RuntimeException {
     public LoanNotFoundException(String message) {

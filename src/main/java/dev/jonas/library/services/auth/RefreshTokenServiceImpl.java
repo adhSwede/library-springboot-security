@@ -2,7 +2,7 @@ package dev.jonas.library.services.auth;
 
 import dev.jonas.library.entities.RefreshToken;
 import dev.jonas.library.entities.User;
-import dev.jonas.library.exceptions.auth.TokenExpiredException;
+import dev.jonas.library.exceptions.security.TokenExpiredException;
 import dev.jonas.library.repositories.RefreshTokenRepository;
 import dev.jonas.library.repositories.UserRepository;
 import dev.jonas.library.utils.EntityFetcher;
