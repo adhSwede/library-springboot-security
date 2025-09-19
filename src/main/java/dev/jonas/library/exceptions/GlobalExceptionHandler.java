@@ -1,6 +1,7 @@
 package dev.jonas.library.exceptions;
 
-import dev.jonas.library.exceptions.auth.*;
+import dev.jonas.library.exceptions.api.*;
+import dev.jonas.library.exceptions.security.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -114,6 +115,17 @@ public class GlobalExceptionHandler {
         return errorResponseBuilder.buildErrorResponse(HttpStatus.LOCKED, ex.getMessage(), request);
     }
 
+    // ==================== 500 / Internal Server Error ====================
+    @ExceptionHandler(EncryptionFailedException.class)
+    public ResponseEntity<ErrorResponse> handleEncryptionFailure(EncryptionFailedException ex, HttpServletRequest request) {
+        return errorResponseBuilder.buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(DecryptionFailedException.class)
+    public ResponseEntity<ErrorResponse> handleDecryptionFailure(DecryptionFailedException ex, HttpServletRequest request) {
+        return errorResponseBuilder.buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
     // ==================== Spring’s ResponseStatusException ====================
     // Catches exceptions thrown by Spring with a predefined status (e.g., via @ResponseStatus).
     @ExceptionHandler(ResponseStatusException.class)
@@ -128,4 +140,6 @@ public class GlobalExceptionHandler {
         log.error("Unexpected exception", ex);
         return errorResponseBuilder.buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
+
+
 }

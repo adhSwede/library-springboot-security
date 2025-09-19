@@ -7,8 +7,8 @@ import dev.jonas.library.mappers.DtoToEntityMapper;
 import dev.jonas.library.mappers.EntityToDtoMapper;
 import dev.jonas.library.mappers.RolesToAuthorityMapper;
 import dev.jonas.library.repositories.UserRepository;
+import dev.jonas.library.security.UserAccessValidator;
 import dev.jonas.library.utils.EntityFetcher;
-import dev.jonas.library.utils.UserAccessValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

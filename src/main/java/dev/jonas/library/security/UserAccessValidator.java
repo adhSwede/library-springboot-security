@@ -1,7 +1,7 @@
-package dev.jonas.library.utils;
+package dev.jonas.library.security;
 
 import dev.jonas.library.entities.User;
-import dev.jonas.library.exceptions.auth.AccessDeniedException;
+import dev.jonas.library.exceptions.security.AccessDeniedException;
 import dev.jonas.library.mappers.RolesToAuthorityMapper;
 import dev.jonas.library.repositories.UserRepository;
 import lombok.AllArgsConstructor;

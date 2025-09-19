@@ -1,4 +1,4 @@
-package dev.jonas.library.exceptions;
+package dev.jonas.library.exceptions.api;
 
 public class AuthorNotFoundException extends RuntimeException {
     public AuthorNotFoundException(String message) {

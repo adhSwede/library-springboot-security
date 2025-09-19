@@ -1,5 +1,6 @@
 package dev.jonas.library.entities;
 
+import dev.jonas.library.security.encryption.StringEncryptionConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ public class User {
     private Long userId;
 
     // ==================== [ Basic Info ] ====================
+    // Email is encrypted using AES before storage
+    @Convert(converter = StringEncryptionConverter.class)
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
@@ -29,10 +32,9 @@ public class User {
     @Column(nullable = false, length = 100)
     private String lastName;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false) // Password is hashed using BCrypt before storage
     private String password;
 
-    // NOTE: Changed from LocalDate → LocalDateTime for precise timestamps (VG logic)
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
