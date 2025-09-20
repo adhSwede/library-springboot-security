@@ -28,6 +28,7 @@ A secure and extensible REST API for managing a library system — **built with 
 ### Core Functionality
 
 * Full CRUD for:
+
     * Books
     * Authors
     * Users
@@ -55,10 +56,13 @@ A secure and extensible REST API for managing a library system — **built with 
 * **Security headers**: CSP, HSTS, X-Frame-Options, etc.
 * **Exception handling**: custom + Spring exceptions covered
 * **Audit logging** for login, logout, refresh, and register
-* **Password hashing** using BCrypt
+* **Password + NationalId hashing** (BCrypt + SHA-based hashing)
 * **Input validation** via DTOs and JSR-380
 * **CORS policy**: secure defaults
 * **Method-level security**: `@PreAuthorize`, `UserAccessValidator`
+* **SQLite timestamp conversion** (`yyyy-MM-dd HH:mm:ss`)
+
+📖 See [Security Architecture](./security.md) for full details.
 
 ---
 
