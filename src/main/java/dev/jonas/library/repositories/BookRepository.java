@@ -14,7 +14,6 @@ import java.util.Optional;
 // ==================== [ Queries ] ====================
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-
     // ==================== [ JPQL Search ] ====================
     @Query("SELECT b FROM Book b WHERE " +
             "(:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +

@@ -25,6 +25,9 @@ public class UserInputDTO {
     private String email;
 
     @NotBlank
+    private String nationalId;
+
+    @NotBlank
     @Size(min = 8, max = 100)
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,100}$",

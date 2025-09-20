@@ -2,6 +2,7 @@ package dev.jonas.library.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity

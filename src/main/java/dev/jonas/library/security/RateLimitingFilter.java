@@ -51,17 +51,17 @@ public class RateLimitingFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // ==================== [ Skip Rate Limit if Authenticated ] ====================
+        // ==================== [ No Limit if Authenticated ] ====================
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = auth != null && auth.isAuthenticated() &&
                 !(auth instanceof AnonymousAuthenticationToken);
 
         if (isAuthenticated) {
-            chain.doFilter(request, response); // Skip rate limiting for logged-in users
+            chain.doFilter(request, response);
             return;
         }
 
-        // ==================== [ Rate Limit Unauthenticated Users ] ====================
+        // ==================== [ Limit Unauthenticated Users ] ====================
         String clientId = getClientIdentifier(httpRequest);
         Bucket bucket = bucketCache.computeIfAbsent(clientId, k -> createNewBucket());
 

@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final Duration accessTokenDuration = Duration.ofHours(1);
 
-    // #################### [ Login ] ####################
+    // ========== [ Login ] ==========
     @Override
     public AuthResponseDto login(LoginRequestDto loginDto) {
         User user = EntityFetcher.getUserOrThrow(loginDto.getEmail(), userRepository);
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         return generateAuthTokensForUser(user);
     }
 
-    // #################### [ Register ] ####################
+    // ========== [ Register ] ==========
     @Override
     public AuthResponseDto register(UserInputDTO registerDto) {
         boolean exists = userRepository.findByEmailIgnoreCase(registerDto.getEmail()).isPresent();
@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
         return generateAuthTokensForUser(user);
     }
 
-    // #################### [ Refresh Token ] ####################
+    // ========== [ Refresh Token ] ==========
     @Override
     public AuthResponseDto refresh(String oldRefreshToken) {
         LocalDateTime timestamp = LocalDateTime.now();
@@ -132,7 +132,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    // #################### [ Helper Methods ] ####################
+    // ========== [ Helper Methods ] ==========
     private AuthResponseDto generateAuthTokensForUser(User user) {
         UserDetails userDetails = new CustomUserDetails(
                 user,

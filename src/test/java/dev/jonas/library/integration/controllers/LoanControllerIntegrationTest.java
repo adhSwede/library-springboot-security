@@ -64,6 +64,7 @@ class LoanControllerIntegrationTest {
                 "Målvakt",
                 "hasse.malvakt@mail.se",
                 "123",
+                "1234567890",
                 LocalDateTime.now()
         );
         User savedUser = userRepository.save(user);

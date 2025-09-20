@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LoanService {
 
-    // #################### [ GET ] ####################
+    // ========== [ GET ] ==========
     List<LoanDTO> getAllLoanDTOs();
 
     List<LoanDTO> getLoansByUserId(Long userId);
@@ -16,10 +16,10 @@ public interface LoanService {
 
     LoanDTO getLoanById(Long loanId);
 
-    // #################### [ POST ] ####################
+    // ========== [ POST ] ==========
     LoanDTO addLoan(LoanCreateDTO dto);
 
-    // #################### [ PUT] ####################
+    // ========== [ PUT] ==========
     LoanDTO extendLoan(Long loanId);
 
     LoanDTO returnLoan(Long loanId);

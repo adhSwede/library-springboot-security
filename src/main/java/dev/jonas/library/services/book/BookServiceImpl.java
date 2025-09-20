@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
-    // #################### [ GET ] ####################
+    // ========== [ GET ] ==========
     @Override
     public Page<BookDetailsDTO> getBooksFilteredAndPaged(String title, String author, Pageable pageable) {
         boolean isTitleBlank = (title == null || title.isBlank());
@@ -58,7 +58,7 @@ public class BookServiceImpl implements BookService {
 
     }
 
-    // #################### [ POST ] ####################
+    // ========== [ POST ] ==========
     @Override
     public BookDetailsDTO addBook(BookInputDTO dto) {
         Author author = EntityFetcher.getAuthorOrThrow(dto.getAuthorId(), authorRepository);
@@ -69,7 +69,7 @@ public class BookServiceImpl implements BookService {
         return EntityToDtoMapper.mapToBookDetailsDto(savedBook);
     }
 
-    // #################### [ PUT ] ####################
+    // ========== [ PUT ] ==========
     public void decrementAvailableCopies(Long bookId) {
         Book book = EntityFetcher.getBookOrThrow(bookId, bookRepository);
 

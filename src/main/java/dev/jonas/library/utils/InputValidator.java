@@ -10,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 public class InputValidator {
 
-    // #################### [ Search Parameters Validation ] ####################
+    // ========== [ Search Parameters Validation ] ==========
     public static void requireAtLeastOneSearchParam(String title, String author) {
         if ((title == null || title.isBlank()) && (author == null || author.isBlank())) {
             throw new ResponseStatusException(
@@ -21,7 +21,7 @@ public class InputValidator {
     }
 
     @Deprecated
-    // #################### [ Null Validation ] ####################
+    // ========== [ Null Validation ] ==========
     public static void requireNonNull(Object value, String fieldName) {
         if (value == null) {
             throw new ResponseStatusException(
@@ -42,7 +42,7 @@ public class InputValidator {
     }
 
     @Deprecated
-    // #################### [ Blank String Validation ] ####################
+    // ========== [ Blank String Validation ] ==========
     public static void requireNonBlank(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new ResponseStatusException(
@@ -53,7 +53,7 @@ public class InputValidator {
     }
 
     @Deprecated
-    // #################### [ Positive Integer Validation ] ####################
+    // ========== [ Positive Integer Validation ] ==========
     public static void requirePositive(Integer value, String fieldName) {
         if (value == null) {
             throw new ResponseStatusException(

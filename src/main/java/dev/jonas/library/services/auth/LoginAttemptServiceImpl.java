@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class LoginAttemptServiceImpl implements LoginAttemptService {
     private static final int maxFailedAttempts = 5;
     private static final Duration lockoutDuration = Duration.ofMinutes(15);
-    
+
     private final UserRepository userRepository;
 
     @Override

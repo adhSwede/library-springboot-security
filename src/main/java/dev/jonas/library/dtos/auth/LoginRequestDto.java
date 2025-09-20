@@ -14,7 +14,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class LoginRequestDto {
-
     @NotBlank
     @Email
     private String email;

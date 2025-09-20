@@ -9,7 +9,5 @@ import java.util.List;
 // ==================== [ Queries ] ====================
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-
     List<Author> findByLastNameContainingIgnoreCase(String lastName);
-
 }
