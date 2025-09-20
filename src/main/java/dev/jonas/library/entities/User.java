@@ -1,6 +1,7 @@
 package dev.jonas.library.entities;
 
 import dev.jonas.library.security.encryption.StringEncryptionConverter;
+import dev.jonas.library.utils.LocalDateTimeConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,6 @@ public class User {
     private Long userId;
 
     // ==================== [ Basic Info ] ====================
-    // Email is encrypted using AES before storage
-    @Convert(converter = StringEncryptionConverter.class)
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
@@ -32,10 +31,18 @@ public class User {
     @Column(nullable = false, length = 100)
     private String lastName;
 
-    @Column(nullable = false) // Password is hashed using BCrypt before storage
+    // Hashed using BCrypt before storage
+    @Column(nullable = false)
+    @Convert(converter = StringEncryptionConverter.class)
     private String password;
 
+    // Encrypted using AES before storage
     @Column(nullable = false)
+    @Convert(converter = StringEncryptionConverter.class)
+    private String nationalId;
+
+    @Column(nullable = false)
+    @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime registrationDate;
 
     // ==================== [ Additions for Spring security ] ====================
@@ -55,17 +62,20 @@ public class User {
     private long failedLoginAttempts;
 
     @Column
+    @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastLoginAttempt;
 
     @Column
+    @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lockedUntil;
 
     // ==================== [ Custom Constructor ] ====================
-    public User(String firstName, String lastName, String email, String password, LocalDateTime registrationDate) {
+    public User(String firstName, String lastName, String email, String password, String nationalId, LocalDateTime registrationDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.nationalId = nationalId;
         this.registrationDate = registrationDate;
         this.enabled = true;
         this.accountNonExpired = true;

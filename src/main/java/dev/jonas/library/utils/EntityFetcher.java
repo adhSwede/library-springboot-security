@@ -14,19 +14,19 @@ import dev.jonas.library.repositories.*;
  */
 public class EntityFetcher {
 
-    // #################### [ Author Fetching ] ####################
+    // ========== [ Author Fetching ] ==========
     public static Author getAuthorOrThrow(Long authorId, AuthorRepository repo) {
         return repo.findById(authorId)
                 .orElseThrow(() -> new AuthorNotFoundException("Author with ID " + authorId + " not found"));
     }
 
-    // #################### [ Book Fetching ] ####################
+    // ========== [ Book Fetching ] ==========
     public static Book getBookOrThrow(Long bookId, BookRepository repo) {
         return repo.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book with ID " + bookId + " not found"));
     }
 
-    // #################### [ User Fetching ] ####################
+    // ========== [ User Fetching ] ==========
     public static User getUserOrThrow(Long userId, UserRepository repo) {
         return repo.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found"));
@@ -40,13 +40,13 @@ public class EntityFetcher {
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
-    // #################### [ Loan Fetching ] ####################
+    // ========== [ Loan Fetching ] ==========
     public static Loan getLoanOrThrow(Long loanId, LoanRepository repo) {
         return repo.findById(loanId)
                 .orElseThrow(() -> new LoanNotFoundException("Loan with ID " + loanId + " not found"));
     }
 
-    // #################### [ Role Fetching ] ####################
+    // ========== [ Role Fetching ] ==========
     public static Role getRoleOrThrow(String roleName, RoleRepository repo) {
         return repo.findByRoleName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException("Role with name " + roleName + " not found"));

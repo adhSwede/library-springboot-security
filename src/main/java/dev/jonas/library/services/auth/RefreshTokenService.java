@@ -11,7 +11,7 @@ public interface RefreshTokenService {
 
     Optional<RefreshToken> findByToken(String token);
 
-    RefreshToken verifyExpiration (RefreshToken token);
+    RefreshToken verifyExpiration(RefreshToken token);
 
     long deleteByUserId(Long userId);
 

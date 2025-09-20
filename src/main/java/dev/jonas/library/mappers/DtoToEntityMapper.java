@@ -56,6 +56,7 @@ public class DtoToEntityMapper {
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
+        user.setNationalId(dto.getNationalId());
         return user;
     }
 }

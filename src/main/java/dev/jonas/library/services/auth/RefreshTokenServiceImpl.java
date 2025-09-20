@@ -27,7 +27,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final UserRepository userRepository;
 
     private final Duration refreshTokenDuration = Duration.ofDays(7);
-    
+
     @Override
     public RefreshToken createRefreshToken(User user) {
         RefreshToken token = new RefreshToken();

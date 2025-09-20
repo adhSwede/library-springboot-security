@@ -4,6 +4,7 @@ import dev.jonas.library.dtos.book.BookDetailsDTO;
 import dev.jonas.library.dtos.book.BookInputDTO;
 import dev.jonas.library.services.book.BookService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/books")
+@RequiredArgsConstructor
 public class BookController {
 
     private final BookService bookService;
-
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
 
     // ==================== [ GET ] ====================
     @GetMapping

@@ -35,7 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String jwt;
         final String username;
 
-        // Check if Authorization header is present and starts with "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -51,7 +50,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        // If username is extracted and no authentication is set in SecurityContext
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 

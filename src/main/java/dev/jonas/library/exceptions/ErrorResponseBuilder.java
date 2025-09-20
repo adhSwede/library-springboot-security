@@ -1,6 +1,7 @@
 package dev.jonas.library.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -9,13 +10,10 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class ErrorResponseBuilder {
 
     private final Clock clock;
-
-    public ErrorResponseBuilder(Clock clock) {
-        this.clock = clock;
-    }
 
     /**
      * Builds a standardized error response using {@link ErrorResponse}.

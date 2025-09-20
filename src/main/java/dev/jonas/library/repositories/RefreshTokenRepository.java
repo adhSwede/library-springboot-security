@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-
     Optional<RefreshToken> findByToken(String token);
 
     int deleteByUser(User user);
@@ -19,8 +18,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     List<RefreshToken> findAllByUser(User user);
 
     List<RefreshToken> findAllByExpiryDateBefore(LocalDateTime date);
-    
-    boolean existsByToken(String token);
 
+    boolean existsByToken(String token);
 }
 

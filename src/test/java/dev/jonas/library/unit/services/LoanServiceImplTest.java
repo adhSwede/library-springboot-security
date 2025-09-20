@@ -65,6 +65,7 @@ public class LoanServiceImplTest {
                 "Målvakt",
                 "hasse.malvakt@mail.se",
                 "123",
+                "1234567890",
                 LocalDateTime.now()
         );
 

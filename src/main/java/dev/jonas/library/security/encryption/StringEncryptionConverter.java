@@ -13,7 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Component
-@Converter
+@Converter(autoApply = false)
 @Slf4j
 public class StringEncryptionConverter implements AttributeConverter<String, String> {
 

@@ -4,9 +4,7 @@ import dev.jonas.library.dtos.auth.AuthResponseDto;
 import dev.jonas.library.dtos.auth.LoginRequestDto;
 import dev.jonas.library.dtos.auth.RefreshRequestDTO;
 import dev.jonas.library.dtos.user.UserInputDTO;
-import dev.jonas.library.repositories.UserRepository;
 import dev.jonas.library.services.auth.AuthService;
-import dev.jonas.library.services.auth.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository;
-    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid LoginRequestDto req) {

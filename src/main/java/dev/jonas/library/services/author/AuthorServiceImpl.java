@@ -20,7 +20,7 @@ import java.util.List;
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
-    // #################### [ GET ] ####################
+    // ========== [ GET ] ==========
     @Override
     public List<AuthorDTO> getAllAuthorDTOs() {
         return authorRepository.findAll().stream()
@@ -37,7 +37,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .toList();
     }
 
-    // #################### [ POST ] ####################
+    // ========== [ POST ] ==========
     @Override
     public AuthorDTO addAuthor(AuthorInputDTO dto) {
         Author author = DtoToEntityMapper.mapToAuthorEntity(dto);

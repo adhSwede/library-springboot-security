@@ -4,6 +4,7 @@ import dev.jonas.library.dtos.author.AuthorDTO;
 import dev.jonas.library.dtos.author.AuthorInputDTO;
 import dev.jonas.library.services.author.AuthorService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/authors")
+@RequiredArgsConstructor
 public class AuthorController {
 
     private final AuthorService authorService;
-
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
-    }
 
     // ==================== [ GET ] ====================
     @GetMapping
