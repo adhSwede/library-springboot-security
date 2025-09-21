@@ -1,23 +1,25 @@
 # 🔐 Security Architecture (VG-Level)
 
-This document outlines the security measures, design decisions, and risk analysis for the Library Management System. It is written to satisfy the VG-level criteria for secure backend development.
+This document outlines the **security measures, design decisions, and risk analysis** for the Library Management System.
+It is written to satisfy the **VG-level criteria** for secure backend development.
 
 ---
 
 ## Overview
 
-This project implements a **stateless JWT-based authentication system** with advanced protection against common attacks. Security is enforced at multiple levels:
+The project implements a **stateless JWT-based authentication system** with advanced protections against common web security threats. Security is enforced at multiple levels:
 
-* Request-level (filters, headers, CORS)
-* Endpoint-level (`@PreAuthorize`, RBAC)
-* Object-level (custom service-layer validation)
-* Exception handling (centralized, consistent responses)
+* **Request-level** → filters, headers, CORS, rate limiting
+* **Endpoint-level** → `@PreAuthorize` annotations, RBAC
+* **Object-level** → custom service-layer ownership validation
+* **Data-level** → strong hashing for sensitive fields
+* **Exception handling** → centralized, consistent JSON error responses
 
 ---
 
 ## Authentication & Authorization
 
-### JWT-Based Auth
+### JWT-Based Authentication
 
 * **Access Token**: 1 hour expiration
 * **Refresh Token**: 7 day expiration, stored in DB
@@ -25,20 +27,20 @@ This project implements a **stateless JWT-based authentication system** with adv
 
 ### Login Flow
 
-* Credentials are verified
-* On success: access + refresh token are issued
-* On failure: failed attempt recorded (see below)
+* Credentials are verified against hashed values in DB
+* On success → new access + refresh tokens are issued
+* On failure → failed login attempt counter updated (lockout may apply)
 
-### Role-Based Access Control
+### Role-Based Access Control (RBAC)
 
-* `@PreAuthorize` used to restrict access
+* `@PreAuthorize` annotations restrict access at the controller level
 * Roles assigned via `UserRole` join table
-* Service layer includes ownership checks (e.g. only the owner or an admin can access their loans)
+* Service layer includes ownership checks (e.g., only the owner or an admin can access their loans)
 
 ### Custom Access Checks
 
-* `UserAccessValidator` provides fine-grained control
-* Ensures users cannot act on others' resources without permission
+* `UserAccessValidator` enforces fine-grained, per-resource authorization
+* Prevents users from accessing or modifying other users’ resources
 
 ---
 
@@ -46,32 +48,33 @@ This project implements a **stateless JWT-based authentication system** with adv
 
 ### Account Lockout
 
-* 5 failed login attempts → locked for 15 minutes
-* Lock status stored in DB (`lockedUntil` field)
+* **5 failed login attempts** → account locked for **15 minutes**
+* Lock status tracked in DB (`lockedUntil` column)
 
 ### Rate Limiting
 
-* Servlet filter (`RateLimitingFilter`) limits requests per IP
-* Customizable limit and time window
+* Custom `RateLimitingFilter` limits requests per IP
+* Configurable request limit + time window
 
-### Secure Password Storage
+### Secure Data Storage
 
-* BCrypt used for hashing user passwords
-* Salt included automatically
+* **Passwords** → stored using BCrypt with automatic per-user salt
+* **National ID** → hashed before persistence (privacy protection)
+* **Timestamps** → stored in SQLite-friendly format (`yyyy-MM-dd HH:mm:ss`)
 
 ### Security Headers
 
-* **CSP**: Content-Security-Policy
-* **HSTS**: Strict-Transport-Security
-* **X-Frame-Options**: DENY
-* **X-Content-Type-Options**: nosniff
-* **Referrer-Policy**: same-origin
+* **CSP**: `Content-Security-Policy`
+* **HSTS**: `Strict-Transport-Security`
+* **X-Frame-Options**: `DENY`
+* **X-Content-Type-Options**: `nosniff`
+* **Referrer-Policy**: `same-origin`
 
 ### Exception Handling
 
-* All custom exceptions handled centrally
-* Spring exceptions (403, 404, 400, etc) mapped to clean JSON responses
-* Validation errors return informative messages
+* Centralized handler for all custom exceptions
+* Maps Spring security errors (403, 404, 400, etc.) to clean JSON responses
+* Validation errors return **specific, user-friendly messages**
 
 ---
 
@@ -81,16 +84,16 @@ This project implements a **stateless JWT-based authentication system** with adv
 | ------------------------ | ------------------------------------------------------ |
 | Brute Force              | Account lockout, rate limiting                         |
 | Token Theft              | Short access token lifespan, refresh token revocation  |
-| Unauthorized Data Access | Role checks + `UserAccessValidator`                    |
+| Unauthorized Data Access | RBAC + `UserAccessValidator`                           |
 | SQL Injection            | JPA / Hibernate ORM used — no raw SQL                  |
 | CSRF                     | Stateless JWT (no cookies) avoids this class of attack |
-| XSS                      | CSP header enforced                                    |
+| XSS                      | Strict CSP header                                      |
 
 ### Remaining Risks
 
-* Refresh tokens are long-lived. If stolen, they can be abused until expiry.
-* No device/session management — user can't revoke individual refresh tokens.
-* No email verification / 2FA (beyond assignment scope)
+* **Refresh tokens** are long-lived: if stolen, they remain valid until expiry.
+* **No device/session management**: users cannot revoke a single refresh token.
+* **No email verification / 2FA**: out of scope for current assignment.
 
 ---
 
@@ -99,28 +102,41 @@ This project implements a **stateless JWT-based authentication system** with adv
 | Feature               | Impact                                                       |
 | --------------------- | ------------------------------------------------------------ |
 | Account lockout       | Improves security but may block legitimate users temporarily |
-| Short token life (1h) | Requires token refresh more often                            |
-| Rate limiting         | Can block automated tools (e.g. Swagger, Postman) if abused  |
+| Short token life (1h) | Requires more frequent token refreshes                       |
+| Rate limiting         | May affect automated tools (Swagger, Postman) if misused     |
 
 ---
 
 ## Design Rationale
 
-* JWT chosen for statelessness and frontend compatibility
-* Lockout + rate limiting required for VG criteria
-* Token structure allows for scaling (e.g., distributed systems)
-* SQLite used to simplify setup but can be swapped for production DB easily
+* **JWT** chosen for statelessness and frontend compatibility
+* **Lockout + rate limiting** implemented to meet VG criteria
+* **Token model** supports scaling to distributed systems
+* **Sensitive data hashing** ensures protection even if DB is leaked
+* **SQLite** used for assignment portability — can be swapped for a production-ready DB
+
+---
+
+## Implementation Notes (Developer Reference)
+
+| Component                | Location / Package | Responsibility                                 |
+| ------------------------ | ------------------ | ---------------------------------------------- |
+| `AuthService.refresh()`  | `services.auth`    | Validates refresh token, issues new JWTs       |
+| `UserAccessValidator`    | `security`         | Ownership checks on service-layer operations   |
+| `RateLimitingFilter`     | `filters`          | Per-IP request limiting                        |
+| `GlobalExceptionHandler` | `exceptions`       | Centralized error handling, JSON error mapping |
+| `User` entity            | `entities`         | Stores hashed password, hashed nationalId      |
+| `SecurityConfig`         | `config`           | Configures Spring Security + JWT filter chain  |
 
 ---
 
 ## Summary
 
-This backend system fulfills all technical security criteria outlined for VG level, including:
+This backend system fulfills **all technical security criteria** required for VG level:
 
 * Strong authentication and authorization model
-* Protection against common attacks
-* Secure error handling and audit logging
+* Secure handling of sensitive data (passwords + national IDs)
+* Protection against brute force, injection, and token theft
+* Hardened error handling and centralized logging
 
-Only optional documentation and frontend-level considerations remain out of scope.
-
-> Last reviewed: 2025-09-18
+> Last reviewed: 2025-09-21
