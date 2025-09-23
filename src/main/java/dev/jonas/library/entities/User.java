@@ -33,7 +33,6 @@ public class User {
 
     // Hashed using BCrypt before storage
     @Column(nullable = false)
-    @Convert(converter = StringEncryptionConverter.class)
     private String password;
 
     // Encrypted using AES before storage

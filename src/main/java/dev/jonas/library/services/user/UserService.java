@@ -1,5 +1,6 @@
 package dev.jonas.library.services.user;
 
+import dev.jonas.library.dtos.user.RoleChangeRequest;
 import dev.jonas.library.dtos.user.UserDTO;
 import dev.jonas.library.dtos.user.UserInputDTO;
 
@@ -11,4 +12,8 @@ public interface UserService {
     UserDTO getUserByEmail(String email);
 
     UserDTO addUser(UserInputDTO dto);
+
+    UserDTO assignRole(RoleChangeRequest request);
+
+    UserDTO removeRole(RoleChangeRequest request);
 }
