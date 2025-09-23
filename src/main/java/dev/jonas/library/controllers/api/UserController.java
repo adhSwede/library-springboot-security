@@ -1,14 +1,15 @@
 package dev.jonas.library.controllers.api;
 
 import dev.jonas.library.dtos.loan.LoanDTO;
+import dev.jonas.library.dtos.user.RoleChangeRequest;
 import dev.jonas.library.dtos.user.UserDTO;
 import dev.jonas.library.dtos.user.UserInputDTO;
 import dev.jonas.library.services.loan.LoanService;
 import dev.jonas.library.services.user.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -42,6 +43,14 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @PreAuthorize("@userAccessValidator.isAdminOrSelf(principal.username)")
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getUserByEmail() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDTO userDto = userService.getUserByEmail(email);
+        return ResponseEntity.ok(userDto);
+    }
+
     @PreAuthorize("@userAccessValidator.isAdminOrSelf(#userId)")
     @GetMapping("/{userId}/loans")
     public ResponseEntity<List<LoanDTO>> getLoansByUserId(@PathVariable Long userId) {
@@ -50,12 +59,28 @@ public class UserController {
     }
 
     // ==================== [ POST ] ====================
+    @Deprecated // User registration is handled in AuthController
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<UserDTO> addUser(@RequestBody @Valid UserInputDTO dto) {
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserInputDTO dto) {
         UserDTO savedUser = userService.addUser(dto);
         return ResponseEntity
                 .created(URI.create("/users/email/" + savedUser.getEmail()))
                 .body(savedUser);
+    }
+
+    // ==================== [ PUT ] ====================
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/roles")
+    public ResponseEntity<UserDTO> assignRole(@RequestBody RoleChangeRequest request) {
+        UserDTO updatedUser = userService.assignRole(request);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/roles")
+    public ResponseEntity<UserDTO> removeRole(@RequestBody RoleChangeRequest request) {
+        UserDTO updatedUser = userService.removeRole(request);
+        return ResponseEntity.ok(updatedUser);
     }
 }

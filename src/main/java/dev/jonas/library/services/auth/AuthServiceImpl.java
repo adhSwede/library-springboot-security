@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
     private final RefreshTokenService refreshTokenService;
     private final LoginAttemptService loginAttemptService;
     private final JwtUtil jwtUtil;
@@ -86,16 +84,18 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = DtoToEntityMapper.mapToUserEntity(registerDto);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         User savedUser = userRepository.save(user);
 
         Role role = EntityFetcher.getRoleOrThrow("USER", roleRepository);
-
-        UserRole userRole = new UserRole(user.getUserId(), role.getRoleId());
+        UserRole userRole = new UserRole(savedUser.getUserId(), role.getRoleId());
         userRoleRepository.save(userRole);
 
-        log.info("New user '{}' registered successfully at {}", user.getEmail(), LocalDateTime.now());
+        log.info("New user '{}' registered successfully at {}", savedUser.getEmail(), LocalDateTime.now());
 
-        return generateAuthTokensForUser(user);
+        return generateAuthTokensForUser(savedUser);
     }
 
     // ========== [ Refresh Token ] ==========

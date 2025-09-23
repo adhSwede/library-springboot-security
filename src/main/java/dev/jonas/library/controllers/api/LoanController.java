@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -39,10 +40,13 @@ public class LoanController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping("/user")
+    @GetMapping("/me")
     public ResponseEntity<List<LoanDTO>> getLoansForCurrentUser(Authentication auth) {
-        String email = auth.getName();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<LoanDTO> userLoans = loanService.getLoansByUserEmail(email);
+        if (userLoans.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(userLoans);
     }
 
